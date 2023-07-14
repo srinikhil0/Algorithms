@@ -1,4 +1,4 @@
-<?php 
+<?php
 function insertionSort(&$arr, $n){
     for($j=1; $j<$n; $j++){
         $key = $arr[$j];
