@@ -1,42 +1,62 @@
-# function merge_sort($arr){
-#     if ($arr.Length -gt 1){
-#         $mid = $arr.Length/2
-#         $L = $arr[$mid..($arr.Length - 1)]
-#         $R = $arr[0..($mid - 1)]
+function merge($arr, $p, $q, $r) {
+    $n1 = $q - $p + 1
+    $n2 = $r - $q
 
-#         $L = merge_sort $L
-#         $R = merge_sort $R
-#         $i=0
-#         $j=0
-#         $k=0
-#         while($i -lt $L.Length -and $j -lt $R.Length){
-#             if($L[$i] -le $R[$j]){
-#                 $arr[$k]=$L[$i]
-#                 $i++
-#             }else{
-#                 $arr[$k]=$R[$j]
-#                 $j++
-#             }
-#             $k++
-#         }
+    $L = New-Object int[] $n1
+    $R = New-Object int[] $n2
 
-#         while($i -lt $L.Length){
-#             $arr[$k]=$L[$i]
-#             $i++
-#             $k++
-#         }
+    for ($i = 0; $i -lt $n1; $i++) {
+        $L[$i] = $arr[$p + $i]
+    }
+    for ($j = 0; $j -lt $n2; $j++) {
+        $R[$j] = $arr[$q + $j + 1]
+    }
 
-#         while($j -lt $R.Length){
-#             $arr[$k]=$L[$j]
-#             $j++
-#             $k++
-#         }
-#     }
-#     return $arr
-# }
+    $i = 0
+    $j = 0
+    $k = $p
 
-# $array = @(31, 41, 59, 26, 41, 58)
-# $sorted_array = merge_sort $array
-# foreach($item in $sorted_array){
-#     Write-Host $item
-# }
+    while ($i -lt $n1 -and $j -lt $n2) {
+        if ($L[$i] -le $R[$j]) {
+            $arr[$k] = $L[$i]
+            $i++
+        }
+        else {
+            $arr[$k] = $R[$j]
+            $j++
+        }
+        $k++
+    }
+
+    while ($i -lt $n1) {
+        $arr[$k] = $L[$i]
+        $i++
+        $k++
+    }
+
+    while ($j -lt $n2) {
+        $arr[$k] = $R[$j]
+        $j++
+        $k++
+    }
+}
+
+function merge_sort($arr, $p, $r) {
+    if ($p -lt $r) {
+        $q = [math]::Floor(($p + $r) / 2)
+        merge_sort $arr $p $q
+        merge_sort $arr ($q + 1) $r
+        merge $arr $p $q $r
+    }
+}
+
+function print_arr($arr, $s) {
+    for ($i = 0; $i -lt $s; $i++) {
+        Write-Host $arr[$i]
+    }
+}
+
+$array = @(31, 41, 59, 26, 41, 58)
+$size = $array.Length
+merge_sort $array 0 ($size - 1)
+print_arr $array $size
